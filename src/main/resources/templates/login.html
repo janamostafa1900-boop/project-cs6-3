@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+
+<h1>Login</h1>
+
+<p th:if="${lastUsername != null}" style="color:blue">
+    Welcome back, <span th:text="${lastUsername}"></span>
+</p>
+
+<p th:text="${message}" style="color:green"></p>
+<p th:text="${error}" style="color:red"></p>
+
+<form th:action="@{/login}" method="post">
+    <label>Username:</label>
+    <input type="text" name="username" th:value="${lastUsername}">
+    <br><br>
+
+    <label>Password:</label>
+    <input type="password" name="password">
+    <br><br>
+
+    <button type="submit">Login</button>
+</form>
+
+<p>
+    Don't have an account?
+    <a th:href="@{/register}">Register here</a>
+</p>
+
+</body>
+</html>
