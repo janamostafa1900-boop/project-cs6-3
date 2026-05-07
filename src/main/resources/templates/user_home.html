@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Home</title>
+</head>
+<body>
+
+<h1>User Home Page</h1>
+
+<p>
+    Welcome,
+    <span th:text="${user.username}"></span>
+</p>
+
+<p>This page is for normal users.</p>
+
+<a th:href="@{/logout}">Logout</a>
+
+</body>
+</html>
