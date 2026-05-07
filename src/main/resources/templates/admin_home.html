@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Home</title>
+</head>
+<body>
+
+<h1>Admin Home Page</h1>
+
+<p>
+    Welcome Admin,
+    <span th:text="${user.username}"></span>
+</p>
+
+<p>This page is for admin only.</p>
+
+<a th:href="@{/logout}">Logout</a>
+
+</body>
+</html>
