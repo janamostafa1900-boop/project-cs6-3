@@ -29,12 +29,12 @@ public class RegistrationController {
 
 
         boolean alreadyRegistered =
-                registrationRepo.findByUserIdAndEventId(userId, eventId).isPresent();
+registrationrepository.findByUserIdAndEventId(userId, eventId).isPresent();
 
         if (!alreadyRegistered) {
 
             Registration reg = new Registration(userId, eventId);
-            registrationRepo.save(reg);
+           registrationrepository.save(reg);
         }
 
 
