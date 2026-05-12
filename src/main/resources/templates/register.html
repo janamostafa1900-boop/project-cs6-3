@@ -1,41 +1,43 @@
 <!DOCTYPE html>
-<html >
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Register</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
-<h1>Create Account</h1>
+<div class="box">
 
-<p th:text="${error}" style="color:red"></p>
+    <h1>Create Account</h1>
 
-<form th:action="@{/register}" method="post">
-    <label>Username:</label>
-    <input type="text" name="username">
-    <br><br>
+    <p th:text="${error}" style="color:red"></p>
 
-    <label>Email:</label>
-    <input type="email" name="email">
-    <br><br>
+    <form th:action="@{/register}" method="post">
+        <label>Username:</label>
+        <input type="text" name="username">
 
-    <label>Password:</label>
-    <input type="password" name="password">
-    <br><br>
+        <label>Email:</label>
+        <input type="email" name="email">
 
-    <label>Role:</label>
-    <select name="role">
-        <option value="USER">USER</option>
-        <option value="ADMIN">ADMIN</option>
-    </select>
-    <br><br>
+        <label>Password:</label>
+        <input type="password" name="password">
 
-    <button type="submit">Register</button>
-</form>
+        <label>Role:</label>
+        <select name="role">
+            <option value="USER">USER</option>
+            <option value="ADMIN">ADMIN</option>
+        </select>
 
-<p>
-    Already have an account?
-    <a th:href="@{/login}">Login here</a>
-</p>
+        <button type="submit">Register</button>
+    </form>
+
+    <p>
+        Already have an account?
+        <a th:href="@{/login}">Login here</a>
+    </p>
+
+</div>
 
 </body>
 </html>
+
