@@ -13,7 +13,7 @@ public class RegistrationController {
         this.registrationrepo = registrationrepo;
     }
     @PostMapping("/register-event")
-    public String registerForEvent(@RequestParam int eventId,
+    public String registerForEvent(@RequestParam Long eventId,
                                    HttpSession session) {
 
 
