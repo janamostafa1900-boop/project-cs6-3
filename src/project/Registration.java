@@ -17,11 +17,6 @@ public class Registration {
 
 public Registration() {
 }
-public Registration(Long userId, int eventId) {
-    this.userId = userId;
-    this.eventId = eventId;
-}
-
 
 public Long getId() {
     return id;
