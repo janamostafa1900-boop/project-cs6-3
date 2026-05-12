@@ -1,20 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Admin Home</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
-<h1>Admin Home Page</h1>
+<div class="box">
 
-<p>
-    Welcome Admin,
-    <span th:text="${user.username}"></span>
-</p>
+    <h1>Admin Home Page</h1>
 
-<p>This page is for admin only.</p>
+    <p>
+        Welcome Admin,
+        <span th:text="${user.username}"></span>
+    </p>
 
-<a th:href="@{/logout}">Logout</a>
+    <p><a href="/admin/add-event">Add Event</a></p>
+    <p><a href="/admin/events">Manage Events</a></p>
+    <p><a href="/admin/participants">View Participants</a></p>
+    <p><a href="/logout">Logout</a></p>
+
+</div>
 
 </body>
 </html>
+
