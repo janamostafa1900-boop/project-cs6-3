@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Events</title>
+
+    <!-- Google Fonts: clean editorial pairing -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap"
+          rel="stylesheet" />
+
+    <style>
+        /* ── Design tokens ─────────────────────────────────────── */
+        :root {
+            --bg:        #0d0f14;
+            --surface:   #161921;
+            --border:    #252830;
+            --accent:    #f0c040;
+            --accent-dk: #b8920e;
+            --text:      #e8eaf0;
+            --muted:     #7a7f94;
+            --radius:    12px;
+            --success:   #3ecf8e;
+        }
+
+        /* ── Reset ─────────────────────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            padding: 0 0 80px;
+        }
+
+        /* ── Header ────────────────────────────────────────────── */
+        header {
+            border-bottom: 1px solid var(--border);
+            padding: 28px 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        header h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        header h1 span { color: var(--accent); }
+
+        .header-meta {
+            font-size: 0.82rem;
+            color: var(--muted);
+        }
+
+        /* ── Flash message ─────────────────────────────────────── */
+        .flash {
+            margin: 24px 48px 0;
+            padding: 14px 20px;
+            border-radius: var(--radius);
+            background: rgba(62, 207, 142, 0.12);
+            border: 1px solid rgba(62, 207, 142, 0.35);
+            color: var(--success);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: fadeIn .3s ease;
+        }
+
+        .flash::before { content: "✓"; font-weight: 700; font-size: 1rem; }
+
+        /* ── Page layout ───────────────────────────────────────── */
+        .page-body {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 24px 0;
+        }
+
+        .section-header {
+            margin-bottom: 32px;
+        }
+
+        .section-header h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        .section-header p {
+            color: var(--muted);
+            margin-top: 6px;
+            font-size: 0.92rem;
+        }
+
+        /* ── Empty state ───────────────────────────────────────── */
+        .empty {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--muted);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            opacity: .5;
+        }
+
+        /* ── Event grid ────────────────────────────────────────── */
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* ── Event card ────────────────────────────────────────── */
+        .event-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: border-color .2s, transform .2s;
+            animation: slideUp .35s ease both;
+        }
+
+        .event-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        /* stagger each card */
+        .event-card:nth-child(1)  { animation-delay: .05s; }
+        .event-card:nth-child(2)  { animation-delay: .10s; }
+        .event-card:nth-child(3)  { animation-delay: .15s; }
+        .event-card:nth-child(4)  { animation-delay: .20s; }
+        .event-card:nth-child(5)  { animation-delay: .25s; }
+        .event-card:nth-child(n+6){ animation-delay: .30s; }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .event-badge {
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: rgba(240, 192, 64, 0.10);
+            border: 1px solid rgba(240, 192, 64, 0.25);
+            padding: 3px 10px;
+            border-radius: 99px;
+        }
+
+        .event-date {
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
+
+        .event-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .event-description {
+            font-size: 0.87rem;
+            color: var(--muted);
+            line-height: 1.6;
+            flex: 1;
+
+            /* clamp to 3 lines */
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .event-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        .event-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* ── Register button ───────────────────────────────────── */
+        .btn-register {
+            width: 100%;
+            padding: 11px 0;
+            background: var(--accent);
+            color: #0d0f14;
+            border: none;
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: .02em;
+            transition: background .18s, transform .12s;
+        }
+
+        .btn-register:hover  { background: #f5ce60; transform: scale(1.02); }
+        .btn-register:active { transform: scale(0.98); }
+
+        /* ── Animations ────────────────────────────────────────── */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        /* ── Responsive ────────────────────────────────────────── */
+        @media (max-width: 600px) {
+            header { padding: 20px 20px; }
+            .flash, .page-body { padding-left: 16px; padding-right: 16px; }
+            .flash { margin-left: 16px; margin-right: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ── Header ──────────────────────────────────────────────── -->
+    <header>
+        <h1>Event<span>Hub</span></h1>
+        <span class="header-meta">Browse &amp; Register</span>
+    </header>
+
+    <!-- ── Flash message (post-registration) ───────────────────── -->
+    <div class="flash" th:if="${successMessage}" th:text="${successMessage}"></div>
+
+    <!-- ── Main content ────────────────────────────────────────── -->
+    <div class="page-body">
+
+        <div class="section-header">
+            <h2>Upcoming Events</h2>
+            <p>Find something you love and reserve your spot.</p>
+        </div>
+
+        <!-- Empty state -->
+        <div class="empty" th:if="${#lists.isEmpty(events)}">
+            <div class="empty-icon">📭</div>
+            <p>No events available right now. Check back soon!</p>
+        </div>
+
+        <!-- Event cards -->
+        <div class="events-grid" th:unless="${#lists.isEmpty(events)}">
+
+            <div class="event-card" th:each="event : ${events}">
+
+                <div class="card-top">
+                    <!-- Category badge — falls back to "Event" if null -->
+                    <span class="event-badge"
+                          th:text="${event.category != null ? event.category : 'Event'}">Event</span>
+
+                    <!-- Date — formatted if LocalDate/LocalDateTime, raw otherwise -->
+                    <span class="event-date"
+                          th:text="${#temporals.format(event.date, 'MMM d, yyyy')}">Jan 1, 2025</span>
+                </div>
+
+                <!-- Title -->
+                <div class="event-title" th:text="${event.title}">Event Title</div>
+
+                <!-- Description -->
+                <div class="event-description"
+                     th:text="${event.description}">Event description goes here.</div>
+
+                <!-- Meta row: location + capacity -->
+                <div class="event-meta">
+                    <span>
+                        📍 <span th:text="${event.location != null ? event.location : 'TBD'}">Location</span>
+                    </span>
+                    <span th:if="${event.capacity != null}">
+                        🎟 <span th:text="${event.capacity + ' spots'}">100 spots</span>
+                    </span>
+                </div>
+
+                <!-- Register form — POST to /events/{id}/register -->
+                <form th:action="@{/events/{id}/register(id=${event.id})}"
+                      method="post">
+                    <!-- CSRF token (Spring Security) -->
+                    <input type="hidden"
+                           th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}" />
+                    <button type="submit" class="btn-register">Register →</button>
+                </form>
+
+            </div>
+            <!-- end th:each -->
+
+        </div>
+        <!-- end events-grid -->
+
+    </div>
+    <!-- end page-body -->
+
+</body>
+</html>
