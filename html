@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Available Events</title>
+    <style>
+        before,after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f4f8;
+            color: #2d3748;
+            min-height: 100vh;
+        }
+ 
+        nav {
+            background: #2b6cb0;
+            color: white;
+            padding: 14px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        nav .brand { font-size: 1.3rem; font-weight: 700; letter-spacing: 0.5px; }
+        nav .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 0.95rem;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+        nav .nav-links a:hover { opacity: 1; text-decoration: underline; 
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+ 
+        
+        .page-header {
+            margin-bottom: 28px;
+        }
+        .page-header h1 {
+            font-size: 1.9rem;
+            color: #2b6cb0;
+            margin-bottom: 6px;
+        }
+        .page-header p {
+            color: #718096;
+            font-size: 0.95rem;
+        }
+
+        .alert {
+            padding: 12px 18px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 0.92rem;
+            font-weight: 500;
+        }
+        .alert-success { background: #c6f6d5; color: #276749; border-left: 4px solid #38a169; }
+        .alert-error   { background: #fed7d7; color: #9b2c2c; border-left: 4px solid #e53e3e; }
+ 
+        .no-events {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a0aec0;
+            font-size: 1.05rem;
+        }
+        .no-events span { font-size: 2.5rem; display: block; margin-bottom: 12px; }
+ 
+       
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 22px;
+        }
+ 
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 22px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        }
+ 
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+ 
+        .card-description {
+            font-size: 0.88rem;
+            color: #718096;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+ 
+        .card-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 0.82rem;
+            color: #4a5568;
+        }
+        .badge {
+            background: #ebf8ff;
+            color: #2b6cb0;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .badge.location { background: #faf5ff; color: #6b46c1; }
+ 
+        .btn-register {
+            margin-top: 6px;
+            background: #2b6cb0;
+            color: white;
+            border: none;
+            padding: 10px 0;
+            width: 100%;
+            border-radius: 6px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-register:hover { background: #2c5282; }
+    </style>
+</head>
+<body>
+ 
+<nav>
+    <span class="brand">🎟 EventApp</span>
+    <div class="nav-links">
+        <a th:href="@{/events}">Events</a>
+        <a th:href="@{/my-events}">My Events</a>
+        <a th:href="@{/logout}">Logout</a>
+    </div>
+</nav>
+ 
+<div class="container">
+ 
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>Available Events</h1>
+        <!-- Display logged-in user's name -->
+        <p th:if="${loggedUser != null}">
+            Welcome, <strong th:text="${loggedUser.username}">User</strong>! Browse and register for events below.
+        </p>
+    </div>
+ 
+    <!-- Success Message (after registering) -->
+    <div class="alert alert-success" th:if="${param.success}">
+         You have successfully registered for the event!
+    </div>
+ 
+    <!-- Error Message (e.g. duplicate registration) -->
+    <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+ 
+    <!-- No Events Case -->
+    <div class="no-events" th:if="${#lists.isEmpty(events)}">
+        <span></span>
+        No events are available right now. Check back later!
+    </div>
+ 
+    <!-- Events Grid -->
+    <div class="events-grid" th:if="${!#lists.isEmpty(events)}">
+ 
+        <!-- Loop over every event fetched from the database -->
+        <div class="card" th:each="event : ${events}">
+ 
+            <!-- Event Title -->
+            <div class="card-title" th:text="${event.title}">Event Title</div>
+ 
+            <!-- Event Description -->
+            <div class="card-description" th:text="${event.description}">
+                Event description goes here.
+            </div>
+ 
+            <!-- Date & Location Badges -->
+            <div class="card-meta">
+                <span class="badge" th:text="'📅 ' + ${event.date}">Date</span>
+                <span class="badge location" th:text="'📍 ' + ${event.location}">Location</span>
+            </div>
+ 
+            <!-- Register Button → POST /events/register/{id} -->
+            <form th:action="@{/events/register/{id}(id=${event.id})}" method="post">
+                <button class="btn-register" type="submit">Register</button>
+            </form>
+ 
+        </div>
+        <!-- end th:each -->
+ 
+    </div>
+    <!-- end events-grid -->
+ 
+</div>
+<!-- end container -->
+ 
+</body>
+</html>
