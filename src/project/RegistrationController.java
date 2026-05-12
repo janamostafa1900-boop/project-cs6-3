@@ -1,18 +1,16 @@
 package project;
 
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class RegistrationController {
+    private  RegistrationRepository registrationrepo;
+    public RegistrationController(RegistrationRepository registrationrepo) {
 
-    private final RegistrationRepository registrationrepository;
-    public RegistrationController(RegistrationRepository registrationrepository) {
-
-        this.registrationrepository = registrationrepository;
+        this.registrationrepo = registrationrepo;
     }
     @PostMapping("/register-event")
     public String registerForEvent(@RequestParam int eventId,
@@ -29,12 +27,12 @@ public class RegistrationController {
 
 
         boolean alreadyRegistered =
-registrationrepository.findByUserIdAndEventId(userId, eventId).isPresent();
+registrationrepo.findByUserIdAndEventId(userId, eventId).isPresent();
 
         if (!alreadyRegistered) {
 
             Registration reg = new Registration(userId, eventId);
-           registrationrepository.save(reg);
+           registrationrepo.save(reg);
         }
 
 
