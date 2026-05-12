@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class RegistrationController {
-    private  RegistrationRepository registrationrepo;
+    private  final RegistrationRepository registrationrepo;
     public RegistrationController(RegistrationRepository registrationrepo) {
 
         this.registrationrepo = registrationrepo;
