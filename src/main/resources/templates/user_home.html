@@ -1,20 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>User Home</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
-<h1>User Home Page</h1>
+<div class="box">
 
-<p>
-    Welcome,
-    <span th:text="${user.username}"></span>
-</p>
+    <h1>User Home Page</h1>
 
-<p>This page is for normal users.</p>
+    <p>
+        Welcome,
+        <span th:text="${user.username}"></span>
+    </p>
 
-<a th:href="@{/logout}">Logout</a>
+    <p><a href="/events">View Events</a></p>
+    <p><a href="/my-events">My Events</a></p>
+    <p><a href="/logout">Logout</a></p>
+
+</div>
 
 </body>
 </html>
