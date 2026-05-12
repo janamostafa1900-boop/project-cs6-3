@@ -13,7 +13,7 @@ public class Registration {
     @Id
     private Long id;
     private Long userId;
-    private int eventId;
+    private Long eventId;
 
 public Registration() {
 }
@@ -29,11 +29,11 @@ public void setUserId(Long userId) {
     this.userId = userId;
 }
 
-public int getEventId() {
+public Long getEventId() {
 
     return eventId;
 }
-public void setEventId(int eventId) {
+public void setEventId(Long eventId) {
     this.eventId = eventId;
 }
 }
